@@ -126,9 +126,4 @@ If you create a new project from this base, you can edit:
 
 To match your new app's branding.
 
----
 
-## Notes
-
-- This repo is meant to be a **starting template**, not a full product.
-- Feel free to customize components, hooks, Convex functions, and Clerk configuration as needed for each new app you create from this base.
