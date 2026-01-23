@@ -7,8 +7,6 @@ This repository is a **base project** for building React Native apps with:
 - **Clerk** authentication
 - Custom hooks for Convex and Clerk integration
 
-Use this as a starting point so you don’t have to re-do the setup every time.
-
 ---
 
 ## Requirements
@@ -115,9 +113,7 @@ Internally, the project uses the technical name:
 
 - `base-convex-rn-clerk-hooks`
 
-This is used for things like `package.json` and the Expo slug. The human-readable name you might think of is:
-
-- **"base convex-RN-clerk-hooks project"**
+This is used for things like `package.json` and the Expo slug. 
 
 If you create a new project from this base, you can edit:
 
