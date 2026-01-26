@@ -275,7 +275,7 @@ export default function HomeScreen() {
             {/* PANEL VIEW: Controls */}
             {currentView === "panel" && (
               <View className="w-full">
-                <Subheading>Game Master Panel </Subheading>
+                <Subheading>Game Master Panel! </Subheading>
                 {renderControl("P1", p1, setP1)}
                 {renderControl("P2", p2, setP2)}
                 {renderControl("P3", p3, setP3)}
