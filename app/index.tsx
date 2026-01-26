@@ -5,7 +5,7 @@ import { useUserVariable } from "../hooks/useUserVariable";
 import { useGlobalVariable } from "../hooks/useGlobalVariable";
 import { useSyncUserData } from "../hooks/useSyncUserData";
 import { useSearch } from "../hooks/useSearch";
-import { useFonts } from 'expo-font'; // <--- Added this import
+import { useFonts } from 'expo-font'; 
 
 import FriendCardItem from "./components/FriendCardItem";
 import ChangeCountButton from "./components/ChangeCountButton";
@@ -15,6 +15,7 @@ import Subheading from "./components/Subheading";
 
 import { SignedIn, SignedOut, useOAuth, useClerk, useUser } from "@clerk/clerk-expo";
 
+import { Platform } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 
 import { useEffect, useState } from "react";
@@ -23,6 +24,7 @@ import { useEffect, useState } from "react";
 // Warm up the browser (required for Android reliability)
 export const useWarmUpBrowser = () => {
   useEffect(() => {
+    if (Platform.OS === "web") return;
     void WebBrowser.warmUpAsync();
     return () => { void WebBrowser.coolDownAsync(); };
   }, []);
