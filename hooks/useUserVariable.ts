@@ -4,12 +4,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
 
 interface VariableOptions<T> {
-    isPublic?: boolean;   // default: false
-    userId?: string;      // if set: reading another user
 
-    searchString?: string; // manually setting the searchString
-    searchKey?: keyof T extends never ? string : keyof T; // "tieing" searchString to the value of some object key (priority over searchString)
-    // GPT type code to make searchKey auto-complete
 };
 
 
@@ -54,15 +49,25 @@ interface VariableOptions<T> {
  * @param defaultValue - The value to use while loading or if the variable doesn't exist yet.
  * @param options - Settings for `isPublic` (visibility), `userId` (reading others), and `searchKey` (indexing).
  */
-export function useUserVariable<T>(
-    key: string,
-    defaultValue?: T,
-    options: VariableOptions<T> = {}
-) : [T | undefined, (newValue: T) => void] {
+export function useUserVariable<T>({
+    key,
+    defaultValue,
+    isPublic = false,
+    userId,
+    searchString,
+    searchKey
+}: {
+    key: string;
+    defaultValue?: T;
+    isPublic?: boolean;
+    userId?: string;
+    searchString?: string;
+    searchKey?: keyof T extends never ? string : keyof T;
+}): [T | undefined, (newValue: T) => void] {
 
     // determine user, privliges, etc
-    const queryArgs = options.userId
-        ? { key, targetUserToken: options.userId }
+    const queryArgs = userId
+        ? { key, targetUserToken: userId }
         : { key };
 
     const data = useQuery(api.user_vars.get, queryArgs);
@@ -73,7 +78,7 @@ export function useUserVariable<T>(
         ? undefined
         : (data ?? defaultValue ?? null);
 
-    const isReadOnly = !!options.userId;
+    const isReadOnly = !!userId;
 
     // Actual mutation code
     const setMutation = useMutation(api.user_vars.set)
@@ -90,20 +95,20 @@ export function useUserVariable<T>(
             return;
         }
 
-        let searchString = options.searchString;
+        let currentSearchString = searchString;
 
-        if (options.searchKey && typeof newValue === 'object' && newValue !== null) {
-            const extractedValue = (newValue as any)[options.searchKey];
+        if (searchKey && typeof newValue === 'object' && newValue !== null) {
+            const extractedValue = (newValue as any)[searchKey];
             if (typeof extractedValue === 'string') {
-                searchString = extractedValue;
+                currentSearchString = extractedValue;
             }
         }
 
         setMutation({
             key,
             value: newValue,
-            isPublic: options.isPublic ?? false,
-            searchString: searchString ?? undefined,
+            isPublic: isPublic,
+            searchString: currentSearchString ?? undefined,
         });
     };
 

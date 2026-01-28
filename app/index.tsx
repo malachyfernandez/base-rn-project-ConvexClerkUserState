@@ -46,7 +46,9 @@ export default function HomeScreen() {
     userId?: string
   };
 
-  const [userData, setUserData] = useUserVariable<UserData>("userData", {}, {
+  const [userData, setUserData] = useUserVariable<UserData>({
+    key: "userData",
+    defaultValue: {},
     isPublic: true,
     searchKey: "name"
   });
@@ -56,6 +58,11 @@ export default function HomeScreen() {
 
 
   const [globalScore, setGlobalScore] = useGlobalVariable<number>("globalScore", 0);
+  const [userScore, setUserScore] = useUserVariable<number>({
+    key: "userScore",
+    defaultValue: 0,
+    isPublic: true,
+  });
 
 
   const [searchText, setSearchText] = useState("");
@@ -140,11 +147,11 @@ export default function HomeScreen() {
 
         <SignedIn>
 
-          <DigitalScore score={globalScore} />
+          <DigitalScore score={userScore} />
 
           <ContainerRow>
-            <ChangeCountButton count={globalScore} setCount={setGlobalScore} amount={1} label="+" />
-            <ChangeCountButton count={globalScore} setCount={setGlobalScore} amount={-1} label="-" />
+            <ChangeCountButton count={userScore} setCount={setUserScore} amount={1} label="+" />
+            <ChangeCountButton count={userScore} setCount={setUserScore} amount={-1} label="-" />
           </ContainerRow>
 
 

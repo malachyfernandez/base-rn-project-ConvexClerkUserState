@@ -10,7 +10,7 @@ export const get = query({
         const identity = await ctx.auth.getUserIdentity();
 
         // Default to "Me" if no target is specified
-        const targetUserToken = args.targetUserToken ?? identity?.tokenIdentifier;
+        const targetUserToken = args.targetUserToken ?? identity?.subject;
 
         if (!targetUserToken) return null;
 
@@ -24,7 +24,7 @@ export const get = query({
         if (!record) return null;
 
 
-        const isUserTheVariableOwner = identity?.tokenIdentifier === targetUserToken;
+        const isUserTheVariableOwner = identity?.subject === targetUserToken;
 
         if (isUserTheVariableOwner || record.isPublic) {
             return record.value;
@@ -45,7 +45,7 @@ export const set = mutation({
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) throw new Error("Unauthorized");
 
-        const userToken = identity.tokenIdentifier;
+        const userToken = identity.subject;
 
         const record = await ctx.db
             .query("user_vars")
