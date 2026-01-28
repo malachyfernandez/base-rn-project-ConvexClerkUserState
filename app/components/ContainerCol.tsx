@@ -1,11 +1,11 @@
 import React, { PropsWithChildren } from 'react';
 import { View } from 'react-native';
 
-interface ButtonListColProps extends PropsWithChildren {
+interface ContainerColProps extends PropsWithChildren {
     className?: string;
 }
 
-const ButtonListCol = ({ children, className }: ButtonListColProps) => {
+const ContainerCol = ({ children, className }: ContainerColProps) => {
     return (
         <View className={`flex-col gap-4 ${className}`} >
             {children}
@@ -13,4 +13,4 @@ const ButtonListCol = ({ children, className }: ButtonListColProps) => {
     );
 };
 
-export default ButtonListCol;
+export default ContainerCol;

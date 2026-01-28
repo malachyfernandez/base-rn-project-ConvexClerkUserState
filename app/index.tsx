@@ -11,8 +11,9 @@ import { useSyncUserData } from "../hooks/useSyncUserData";
 import ChangeCountButton from "./components/ChangeCountButton";
 import AuthButton from "./components/AuthButton";
 import BigText from "./components/BigText";
-import ButtonListCol from "./components/ButtonListCol";
 import DigitalScore from "./components/DigitalScore";
+import ContainerCol from "./components/ContainerCol";
+import ContainerRow from "./components/ContainerRow";
 
 // Warm up the browser (required for Android reliability)
 export const useWarmUpBrowser = () => {
@@ -49,7 +50,7 @@ export default function HomeScreen() {
   // updates userData
   useSyncUserData(userData, setUserData);
 
-  
+
   const [globalScore, setGlobalScore] = useGlobalVariable<number>("globalScore", 0);
 
   // 2. Local state to track which screen we are on (null = menu)
@@ -86,6 +87,15 @@ export default function HomeScreen() {
   return (
     <SafeAreaView className="flex-1 bg-black">
       <ScrollView contentContainerStyle={{ alignItems: 'center', paddingBottom: 40 }}>
+
+        
+        <DigitalScore score={globalScore} />
+
+        <ContainerRow>
+          <ChangeCountButton count={globalScore} setCount={setGlobalScore} amount={1} label="+" />
+          <ChangeCountButton count={globalScore} setCount={setGlobalScore} amount={-1} label="-" />
+        </ContainerRow>
+
         <SignedIn>
           <BigText>HELLO</BigText>
           <TouchableOpacity onPress={() => signOut()} className="mt-8">
@@ -94,7 +104,7 @@ export default function HomeScreen() {
         </SignedIn>
 
         <SignedOut>
-          <ButtonListCol>
+          <ContainerCol>
             <AuthButton
               authFlow={startAppleFlow}
               buttonText="Continue with Apple"
@@ -103,9 +113,10 @@ export default function HomeScreen() {
               authFlow={startGoogleFlow}
               buttonText="Continue with Google"
             />
-          </ButtonListCol>
+          </ContainerCol>
 
-          <DigitalScore score={globalScore} />
+
+
         </SignedOut>
       </ScrollView>
     </SafeAreaView>
