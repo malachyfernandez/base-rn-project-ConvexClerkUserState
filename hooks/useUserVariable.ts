@@ -58,7 +58,7 @@ export function useUserVariable<T>(
     key: string,
     defaultValue?: T,
     options: VariableOptions<T> = {}
-) {
+) : [T | undefined, (newValue: T) => void] {
 
     // determine user, privliges, etc
     const queryArgs = options.userId
@@ -107,5 +107,5 @@ export function useUserVariable<T>(
         });
     };
 
-    return [value, setValue];
+    return [value, setValue] as const;
 }
