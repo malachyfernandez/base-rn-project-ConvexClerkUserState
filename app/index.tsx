@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView, Platform, FlatList } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Platform, FlatList, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
 import { SignedIn, SignedOut, useOAuth, useClerk, useUser } from "@clerk/clerk-expo";
@@ -16,6 +16,8 @@ import DigitalScore from "./components/DigitalScore";
 import ContainerCol from "./components/ContainerCol";
 import ContainerRow from "./components/ContainerRow";
 import ListItem from "./components/ListItem";
+import ListSeparator from "./components/ListSeparator";
+import SearchItemCard from "./components/SearchItemCard";
 
 // Warm up the browser (required for Android reliability)
 export const useWarmUpBrowser = () => {
@@ -56,8 +58,8 @@ export default function HomeScreen() {
   const [globalScore, setGlobalScore] = useGlobalVariable<number>("globalScore", 0);
 
 
-  // const [searchString, setSearchString] = useState();
-  const userSearchArray = useSearch<UserData>("mal", "userData")
+  const [searchText, setSearchText] = useState("");
+  const userSearchArray = useSearch<UserData>(searchText, "userData")
 
   // Keyboard listener
   useEffect(() => {
@@ -89,8 +91,45 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-black">
-      <ScrollView contentContainerStyle={{ alignItems: 'center', paddingBottom: 40 }}>
+      <ContainerCol className="w-full items-center absolute top-20 z-10">
+        <TextInput
+          className="w-[90vw] h-12 bg-gray-800 rounded-full px-4 text-white text-xl"
+          placeholder="Search users..."
+          placeholderTextColor="#666"
+          value={searchText}
+          onChangeText={setSearchText}
+        />
 
+        <View className="w-[90vw] items-center rounded-lg bg-slate-900">
+          {userSearchArray ?
+            (<FlatList
+              data={userSearchArray}
+              keyExtractor={(item, index) => item.userId ?? index.toString()}
+              ItemSeparatorComponent={() => <ListSeparator />}
+              renderItem={({ item }) => (
+                <SearchItemCard userId={item.userId} />
+              )
+              }
+            />)
+            :
+            (searchText ? (<Text className="text-white text-xl p-4">Loading...</Text>) : null)
+          }
+
+        </View >
+      </ContainerCol>
+
+      <ScrollView className="pt-20 mt-2" contentContainerStyle={{ alignItems: 'center', paddingBottom: 40 }}>
+
+
+
+        <SignedIn>
+          <View>
+            {userData?.name ?
+              (<Text className="text-white text-2xl">{`Welcome ${userData?.name}!`}</Text>) :
+              (<Text className="text-white text-2xl">Welcome!</Text>)
+            }
+          </View>
+        </SignedIn>
 
         <DigitalScore score={globalScore} />
 
@@ -100,10 +139,7 @@ export default function HomeScreen() {
         </ContainerRow>
 
         <SignedIn>
-          {userData?.name ?
-            (<Text className="text-white text-2xl">{`Welcome ${userData?.name}!`}</Text>) :
-            (<Text className="text-white text-2xl">Welcome!</Text>)
-          }
+
           <DigitalScore score={globalScore} />
 
           <ContainerRow>
@@ -111,29 +147,18 @@ export default function HomeScreen() {
             <ChangeCountButton count={globalScore} setCount={setGlobalScore} amount={-1} label="-" />
           </ContainerRow>
 
+
+
+          {/* <TouchableOpacity className="bg-blue-600 px-8 py-4 rounded-full active:opacity-80 mb-4 min-w-32 items-center">
+            <Text className="text-white text-xl font-bold">{JSON.stringify(userSearchArray)}</Text>
+          </TouchableOpacity> */}
+
+          {/* Search input */}
+
+
           <TouchableOpacity onPress={() => signOut()} className="mt-8">
             <Text className="text-gray-500">Log Out</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity className="bg-blue-600 px-8 py-4 rounded-full active:opacity-80 mb-4 min-w-32 items-center">
-            <Text className="text-white text-xl font-bold">{JSON.stringify(userSearchArray)}</Text>
-          </TouchableOpacity>
-
-          {userSearchArray ?
-            (<FlatList
-              data={userSearchArray}
-              keyExtractor={(item, index) => item.userId ?? index.toString()}
-              renderItem={({ item }) => (
-                <ListItem className="mb-4 w-[90vw]">
-                  <Text className="text-white text-xl">
-                    {item.name}
-                  </Text>
-                </ListItem>
-              )}
-            />)
-            :
-            (<Text className="text-white text-xl">Loading...</Text>)
-          }
 
         </SignedIn>
 
@@ -153,6 +178,6 @@ export default function HomeScreen() {
 
         </SignedOut>
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }

@@ -7,7 +7,7 @@ interface ListItemProps extends PropsWithChildren {
 
 const ListItem = ({ children, className }: ListItemProps) => {
     return (
-        <View className={`bg-gray-400 rounded-lg p-4 ${className}`}>
+        <View className={`w-[90vw] h-16 justify-center p-4 ${className}`}>
             {children}
         </View>            
     );
