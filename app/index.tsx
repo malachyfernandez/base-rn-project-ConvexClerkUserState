@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, ScrollView, Platform, FlatList, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
+import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 import { SignedIn, SignedOut, useOAuth, useClerk, useUser } from "@clerk/clerk-expo";
 import * as WebBrowser from "expo-web-browser";
 
@@ -11,13 +12,12 @@ import { useSearch } from "../hooks/useSearch";
 
 import ChangeCountButton from "./components/ChangeCountButton";
 import AuthButton from "./components/AuthButton";
-import BigText from "./components/BigText";
 import DigitalScore from "./components/DigitalScore";
 import ContainerCol from "./components/ContainerCol";
 import ContainerRow from "./components/ContainerRow";
-import ListItem from "./components/ListItem";
 import ListSeparator from "./components/ListSeparator";
 import SearchItemCard from "./components/SearchItemCard";
+import SearchList from "./components/SearchList";
 
 // Warm up the browser (required for Android reliability)
 export const useWarmUpBrowser = () => {
@@ -52,10 +52,9 @@ export default function HomeScreen() {
     isPublic: true,
     searchKey: "name"
   });
-
+  
   // updates userData
   useSyncUserData(userData, setUserData);
-
 
   const [globalScore, setGlobalScore] = useGlobalVariable<number>("globalScore", 0);
   const [userScore, setUserScore] = useUserVariable<number>({
@@ -106,23 +105,7 @@ export default function HomeScreen() {
           value={searchText}
           onChangeText={setSearchText}
         />
-
-        <View className="w-[90vw] items-center rounded-lg bg-slate-900">
-          {userSearchArray ?
-            (<FlatList
-              data={userSearchArray}
-              keyExtractor={(item, index) => item.userId ?? index.toString()}
-              ItemSeparatorComponent={() => <ListSeparator />}
-              renderItem={({ item }) => (
-                <SearchItemCard userId={item.userId} />
-              )
-              }
-            />)
-            :
-            (searchText ? (<Text className="text-white text-xl p-4">Loading...</Text>) : null)
-          }
-
-        </View >
+        <SearchList data={userSearchArray}/>
       </ContainerCol>
 
       <ScrollView className="pt-20 mt-2" contentContainerStyle={{ alignItems: 'center', paddingBottom: 40 }}>

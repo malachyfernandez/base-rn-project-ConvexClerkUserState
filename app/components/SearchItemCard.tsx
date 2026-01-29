@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import { View, Text } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import ListItem from './ListItem';
 import { useUserVariable } from 'hooks/useUserVariable';
 import Spacer from './Spacer';
@@ -25,7 +26,11 @@ const SearchItemCard = ({ children, className, userId }: SearchItemCardProps) =>
     });
 
     return (
-        <View className="gap-0 w-full items-center">
+        <Animated.View 
+            className="gap-0 w-full items-center"
+            entering={FadeIn.duration(100)}
+            exiting={FadeOut.duration(100)}
+        >
             <ListItem>
                 <Text className="text-white text-xl">
                     {userData?.name}
@@ -35,7 +40,7 @@ const SearchItemCard = ({ children, className, userId }: SearchItemCardProps) =>
                     {userScore}
                 </Text>
             </ListItem>
-        </View>
+        </Animated.View>
     );
 };
 
